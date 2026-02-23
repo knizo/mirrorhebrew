@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>היפוך כתב מראה בעברית</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body { margin: 0; background: #f6f7fb; color: #111; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 18px; }
+    .card { background: #fff; border: 1px solid #e6e8ef; border-radius: 14px; padding: 16px; box-shadow: 0 2px 14px rgba(0,0,0,.04); }
+    h1 { margin: 0 0 10px; font-size: 20px; }
+    p { margin: 6px 0 12px; color: #444; line-height: 1.4; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
+    textarea {
+      width: 100%; min-height: 260px; resize: vertical;
+      border-radius: 12px; border: 1px solid #d7dbe7; padding: 12px;
+      font-size: 16px; line-height: 1.5; outline: none; background: #fff;
+    }
+    textarea:focus { border-color: #8aa2ff; box-shadow: 0 0 0 3px rgba(138,162,255,.25); }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .controls > * { margin: 0; }
+    .btn {
+      border: 1px solid #d7dbe7; background: #fff; color: #111;
+      padding: 10px 12px; border-radius: 12px; cursor: pointer;
+      font-size: 14px;
+    }
+    .btn.primary { border-color: #6f88ff; background: #6f88ff; color: #fff; }
+    .btn:active { transform: translateY(1px); }
+    .opt { display: inline-flex; gap: 8px; align-items: center; padding: 8px 10px; border: 1px solid #e6e8ef; border-radius: 12px; background: #fafbff; }
+    .status { color: #2b6; font-size: 13px; min-height: 18px; }
+    .muted { color: #666; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>כלי להפיכת עברית “כתב מראה” לטקסט תקין</h1>
+      <p class="muted">
+        לרוב “כתב מראה” אומר שכל שורה הוקלדה הפוך. לכן ברירת המחדל: <b>היפוך לכל שורה בנפרד</b>.
+      </p>
+
+      <div class="controls" style="margin-bottom:12px;">
+        <button class="btn primary" id="btnConvert">המר</button>
+        <button class="btn" id="btnSwap">החלף בין השדות</button>
+        <button class="btn" id="btnCopy">העתק תוצאה</button>
+        <button class="btn" id="btnClear">נקה</button>
+
+        <label class="opt">
+          <input type="radio" name="mode" value="lines" checked />
+          היפוך בכל שורה בנפרד
+        </label>
+        <label class="opt">
+          <input type="radio" name="mode" value="all" />
+          היפוך כל הטקסט
+        </label>
+
+        <label class="opt" title="משאיר מספרים/אנגלית בכיוון הנכון (לא הופך אותם יחד עם העברית)">
+          <input type="checkbox" id="keepLatinNums" checked />
+          לא להפוך מספרים/אנגלית
+        </label>
+      </div>
+
+      <div class="grid">
+        <div>
+          <p><b>קלט (כתב מראה)</b></p>
+          <textarea id="input" placeholder="הדבק כאן טקסט עברי הפוך..."></textarea>
+        </div>
+        <div>
+          <p><b>פלט (תקין)</b></p>
+          <textarea id="output" placeholder="כאן תופיע התוצאה..." readonly></textarea>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <div class="status" id="status"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function reverseString(str) {
+      // מפצל לפי נקודות קוד כדי להתמודד טוב יותר עם אימוג'ים/תווים מורכבים
+      return Array.from(str).reverse().join("");
+    }
+
+    // הפיכה "חכמה": הופכת את העברית, אבל משאירה רצפים לטיניים/מספריים כמו שהם
+    // לדוגמה: "123 ABC" יישאר "ABC 123" ביחד בתוך השורה (לא יתהפך לאחור)
+    function smartReverseLine(line) {
+      // רצפים לטיניים/מספריים/סימנים נפוצים במחרוזות (.,:/- וכו')
+      const re = /[A-Za-z0-9@#%&*()_\-+=\[\]{}<>.,:;\/\\|!?'"`~]+/g;
+
+      // מחליפים כל רצף כזה בסימן placeholder, שומרים אותם במערך
+      const tokens = [];
+      const placeholder = (i) => `\u0000${i}\u0000`; // תו NUL כסימון נדיר
+
+      const masked = line.replace(re, (m) => {
+        tokens.push(m);
+        return placeholder(tokens.length - 1);
+      });
+
+      // הופכים את כל השורה
+      let reversed = reverseString(masked);
+
+      // מחזירים את הטוקנים במקומם
+      reversed = reversed.replace(/\u0000(\d+)\u0000/g, (_, n) => tokens[Number(n)]);
+
+      return reversed;
+    }
+
+    function convert(text, mode, keepLatinNums) {
+      if (!text) return "";
+
+      if (mode === "all") {
+        // היפוך כל הטקסט
+        return keepLatinNums
+          ? smartReverseLine(text) // “חכם” על כל המחרוזת
+          : reverseString(text);
+      }
+
+      // ברירת מחדל: היפוך לכל שורה בנפרד (מומלץ לכתב מראה)
+      const lines = text.split(/\r?\n/);
+      const fixed = lines.map(line => keepLatinNums ? smartReverseLine(line) : reverseString(line));
+      return fixed.join("\n");
+    }
+
+    function getMode() {
+      return document.querySelector('input[name="mode"]:checked')?.value || "lines";
+    }
+
+    function setStatus(msg, ok = true) {
+      const el = $("status");
+      el.textContent = msg;
+      el.style.color = ok ? "#2b6" : "#c33";
+      if (msg) setTimeout(() => { if (el.textContent === msg) el.textContent = ""; }, 2500);
+    }
+
+    $("btnConvert").addEventListener("click", () => {
+      const input = $("input").value;
+      const mode = getMode();
+      const keep = $("keepLatinNums").checked;
+      $("output").value = convert(input, mode, keep);
+      setStatus("הומר ✅");
+    });
+
+    $("btnSwap").addEventListener("click", () => {
+      const a = $("input").value;
+      $("input").value = $("output").value;
+      $("output").value = a;
+      setStatus("הוחלף ✅");
+    });
+
+    $("btnCopy").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText($("output").value || "");
+        setStatus("הועתק ללוח ✅");
+      } catch {
+        setStatus("לא הצלחתי להעתיק (הרשאות דפדפן).", false);
+      }
+    });
+
+    $("btnClear").addEventListener("click", () => {
+      $("input").value = "";
+      $("output").value = "";
+      setStatus("נוקה ✅");
+    });
+
+    // נוחות: המרה עם Ctrl+Enter
+    $("input").addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.key === "Enter") $("btnConvert").click();
+    });
+  </script>
+</body>
+</html>
