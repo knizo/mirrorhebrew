@@ -13,14 +13,11 @@
   --focus: 0 0 0 3px rgba(138,162,255,.25);
   --primary: #6f88ff;
 
-  /* opt background (no color-mix for compatibility) */
   --opt-bg: #fafbff;
 
-  /* helps form controls when no JS yet */
   color-scheme: light;
 }
 
-/* Dark theme */
 [data-theme="dark"]{
   --bg: #0b0f19;
   --text: #e9ecf1;
@@ -39,8 +36,12 @@
   color-scheme: dark;
 }
 
+/* base */
+*{ box-sizing: border-box; }
+html, body{ width: 100%; }
 body{
   margin: 0;
+  overflow-x: hidden;
   background: var(--bg);
   color: var(--text);
 
@@ -49,9 +50,11 @@ body{
   padding-right: env(safe-area-inset-right);
 }
 
+/* layout */
 .wrap{
   max-width: 980px;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
   padding: 18px;
 }
 
@@ -89,6 +92,7 @@ p{
   .grid{ grid-template-columns: 1fr 1fr; }
 }
 
+/* inputs */
 textarea{
   width: 100%;
   min-height: 260px;
@@ -96,11 +100,15 @@ textarea{
   border-radius: 12px;
   border: 1px solid var(--border-2);
   padding: 12px;
-  font-size: 16px;      /* prevents iOS zoom */
+  font-size: 16px; /* prevents iOS zoom */
   line-height: 1.5;
   outline: none;
   background: var(--card);
   color: var(--text);
+}
+
+@media (min-width: 900px){
+  textarea{ min-height: 320px; }  /* restore larger desktop boxes */
 }
 
 textarea:focus{
@@ -108,6 +116,7 @@ textarea:focus{
   box-shadow: var(--focus);
 }
 
+/* controls */
 .controls{
   display: flex;
   flex-wrap: wrap;
@@ -125,7 +134,7 @@ textarea:focus{
   border-radius: 14px;
   cursor: pointer;
   font-size: 16px;
-  min-height: 44px; /* mobile tap target */
+  min-height: 44px;
 }
 
 .btn.primary{
@@ -154,7 +163,7 @@ textarea:focus{
   min-height: 18px;
 }
 
-/* Sticky toolbar for phones */
+/* toolbar */
 .toolbar{
   position: sticky;
   top: 0;
@@ -167,7 +176,7 @@ textarea:focus{
   margin-bottom: 12px;
 }
 
-/* Small phones */
+/* small phones */
 @media (max-width: 520px){
   .wrap{ padding: 12px; }
   .card{ padding: 12px; }
@@ -177,43 +186,6 @@ textarea:focus{
   #btnConvert{ width: 100%; }
 }
 
-/* Optional: nicer scrollbar in dark mode (webkit) */
+/* dark scrollbar */
 [data-theme="dark"] textarea::-webkit-scrollbar{ width: 10px; }
 [data-theme="dark"] textarea::-webkit-scrollbar-thumb{ background: #2a3a55; border-radius: 10px; }
-
-/* ---- Layout restore (keep old look) ---- */
-* { box-sizing: border-box; }
-
-html, body { width: 100%; }
-body { overflow-x: hidden; }
-
-/* Force centered container with padding from both sides */
-.wrap{
-  max-width: 980px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 18px;
-}
-
-/* Keep the card centered and roomy */
-.card{
-  border-radius: 14px;
-  padding: 16px;
-}
-
-/* Make textareas as big as before */
-textarea{
-  min-height: 260px; /* baseline */
-}
-
-/* Desktop: bigger boxes (like your original feel) */
-@media (min-width: 900px){
-  textarea{ min-height: 320px; }
-}
-
-/* Small phones: keep it comfortable */
-@media (max-width: 520px){
-  .wrap{ padding: 12px; }
-  .card{ padding: 12px; }
-  textarea{ min-height: 36vh; }
-}
