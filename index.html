@@ -59,6 +59,41 @@
         </label>
       </div>
 
+(function initTheme(){
+  const key = "theme";
+  const toggle = document.getElementById("darkModeToggle");
+  const root = document.documentElement;
+
+  const systemPrefersDark = () =>
+    window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+  const apply = (theme) => {
+    root.setAttribute("data-theme", theme);
+    // Helps form controls / built-in UI match
+    root.style.colorScheme = theme === "dark" ? "dark" : "light";
+    if (toggle) toggle.checked = (theme === "dark");
+  };
+
+  const saved = localStorage.getItem(key);
+  const initial = saved || (systemPrefersDark() ? "dark" : "light");
+  apply(initial);
+
+  // React to user toggle
+  if (toggle) {
+    toggle.addEventListener("change", () => {
+      const t = toggle.checked ? "dark" : "light";
+      localStorage.setItem(key, t);
+      apply(t);
+    });
+  }
+
+  // If user hasn't chosen, follow system changes
+  if (!saved && window.matchMedia) {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    mq.addEventListener?.("change", () => apply(systemPrefersDark() ? "dark" : "light"));
+  }
+})();
+      
       <div class="grid">
         <div>
           <p><b>קלט (כתב מראה)</b></p>
