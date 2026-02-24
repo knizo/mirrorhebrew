@@ -12,34 +12,7 @@
   <meta property="og:description" content="הדבק טקסט בכתב מראה וקבל טקסט תקין בלחיצה." />
   <meta property="og:url" content="https://mirrorhebrew.knizo.com/" />
   <meta property="og:type" content="website" />
-  <style>
-    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body { margin: 0; background: #f6f7fb; color: #111; }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 18px; }
-    .card { background: #fff; border: 1px solid #e6e8ef; border-radius: 14px; padding: 16px; box-shadow: 0 2px 14px rgba(0,0,0,.04); }
-    h1 { margin: 0 0 10px; font-size: 20px; }
-    p { margin: 6px 0 12px; color: #444; line-height: 1.4; }
-    .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
-    textarea {
-      width: 100%; min-height: 260px; resize: vertical;
-      border-radius: 12px; border: 1px solid #d7dbe7; padding: 12px;
-      font-size: 16px; line-height: 1.5; outline: none; background: #fff;
-    }
-    textarea:focus { border-color: #8aa2ff; box-shadow: 0 0 0 3px rgba(138,162,255,.25); }
-    .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-    .controls > * { margin: 0; }
-    .btn {
-      border: 1px solid #d7dbe7; background: #fff; color: #111;
-      padding: 10px 12px; border-radius: 12px; cursor: pointer;
-      font-size: 14px;
-    }
-    .btn.primary { border-color: #6f88ff; background: #6f88ff; color: #fff; }
-    .btn:active { transform: translateY(1px); }
-    .opt { display: inline-flex; gap: 8px; align-items: center; padding: 8px 10px; border: 1px solid #e6e8ef; border-radius: 12px; background: #fafbff; }
-    .status { color: #2b6; font-size: 13px; min-height: 18px; }
-    .muted { color: #666; font-size: 13px; }
-  </style>
+  <link rel="stylesheet" href="./styles.css">
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WX5D24RT8M"></script>
 <script>
@@ -56,7 +29,11 @@
       <p class="muted">
         לרוב “כתב מראה” אומר שכל שורה הוקלדה הפוך. לכן ברירת המחדל: <b>היפוך לכל שורה בנפרד</b>.
       </p>
-
+<div class="toolbar">
+  <div class="controls">
+    ...
+  </div>
+</div>
       <div class="controls" style="margin-bottom:12px;">
         <button class="btn primary" id="btnConvert">המר</button>
         <button class="btn" id="btnSwap">החלף בין השדות</button>
