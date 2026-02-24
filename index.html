@@ -7,21 +7,24 @@
   <meta name="description" content="כלי אונליין חינמי שממיר טקסט עברי שנכתב בכתב מראה לטקסט תקין. עובד שורה-שורה או כל הטקסט, כולל שמירה על מספרים ואנגלית." />
   <link rel="canonical" href="https://mirrorhebrew.knizo.com/" />
   <meta name="robots" content="index,follow" />
-  <html lang="he" dir="rtl">
+
   <meta property="og:title" content="היפוך כתב מראה בעברית" />
   <meta property="og:description" content="הדבק טקסט בכתב מראה וקבל טקסט תקין בלחיצה." />
   <meta property="og:url" content="https://mirrorhebrew.knizo.com/" />
   <meta property="og:type" content="website" />
+
   <link rel="stylesheet" href="./styles.css">
+
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WX5D24RT8M"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-WX5D24RT8M');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WX5D24RT8M"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-WX5D24RT8M');
+  </script>
 </head>
+
 <body>
   <div class="wrap">
     <div class="card">
@@ -29,71 +32,37 @@
       <p class="muted">
         לרוב “כתב מראה” אומר שכל שורה הוקלדה הפוך. לכן ברירת המחדל: <b>היפוך לכל שורה בנפרד</b>.
       </p>
-<div class="toolbar">
-  <div class="controls">
-    ...
-  </div>
-</div>
-      <div class="controls" style="margin-bottom:12px;">
-        <button class="btn primary" id="btnConvert">המר</button>
-        <button class="btn" id="btnSwap">החלף בין השדות</button>
-        <button class="btn" id="btnCopy">העתק תוצאה</button>
-        <button class="btn" id="btnClear">נקה</button>
 
-        <label class="opt">
-          <input type="radio" name="mode" value="lines" checked />
-          היפוך בכל שורה בנפרד
-        </label>
-        <label class="opt">
-          <input type="radio" name="mode" value="all" />
-          היפוך כל הטקסט
-        </label>
+      <!-- Sticky toolbar (mobile-friendly) -->
+      <div class="toolbar">
+        <div class="controls">
+          <button class="btn primary" id="btnConvert">המר</button>
+          <button class="btn" id="btnSwap">החלף בין השדות</button>
+          <button class="btn" id="btnCopy">העתק תוצאה</button>
+          <button class="btn" id="btnClear">נקה</button>
 
-        <label class="opt" title="משאיר מספרים/אנגלית בכיוון הנכון (לא הופך אותם יחד עם העברית)">
-          <input type="checkbox" id="keepLatinNums" checked />
-          לא להפוך מספרים/אנגלית
-        </label>
-        <label class="opt" title="מצב כהה">
-          <input type="checkbox" id="darkModeToggle" />
-                מצב כהה
-        </label>
+          <label class="opt">
+            <input type="radio" name="mode" value="lines" checked />
+            היפוך בכל שורה בנפרד
+          </label>
+
+          <label class="opt">
+            <input type="radio" name="mode" value="all" />
+            היפוך כל הטקסט
+          </label>
+
+          <label class="opt" title="משאיר מספרים/אנגלית בכיוון הנכון (לא הופך אותם יחד עם העברית)">
+            <input type="checkbox" id="keepLatinNums" checked />
+            לא להפוך מספרים/אנגלית
+          </label>
+
+          <label class="opt" title="מצב כהה">
+            <input type="checkbox" id="darkModeToggle" />
+            מצב כהה
+          </label>
+        </div>
       </div>
 
-(function initTheme(){
-  const key = "theme";
-  const toggle = document.getElementById("darkModeToggle");
-  const root = document.documentElement;
-
-  const systemPrefersDark = () =>
-    window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-  const apply = (theme) => {
-    root.setAttribute("data-theme", theme);
-    // Helps form controls / built-in UI match
-    root.style.colorScheme = theme === "dark" ? "dark" : "light";
-    if (toggle) toggle.checked = (theme === "dark");
-  };
-
-  const saved = localStorage.getItem(key);
-  const initial = saved || (systemPrefersDark() ? "dark" : "light");
-  apply(initial);
-
-  // React to user toggle
-  if (toggle) {
-    toggle.addEventListener("change", () => {
-      const t = toggle.checked ? "dark" : "light";
-      localStorage.setItem(key, t);
-      apply(t);
-    });
-  }
-
-  // If user hasn't chosen, follow system changes
-  if (!saved && window.matchMedia) {
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    mq.addEventListener?.("change", () => apply(systemPrefersDark() ? "dark" : "light"));
-  }
-})();
-      
       <div class="grid">
         <div>
           <p><b>קלט (כתב מראה)</b></p>
@@ -114,49 +83,66 @@
   <script>
     const $ = (id) => document.getElementById(id);
 
+    // ---------- Dark mode (must be inside <script>) ----------
+    (function initTheme(){
+      const key = "theme";
+      const toggle = $("darkModeToggle");
+      const root = document.documentElement;
+
+      const systemPrefersDark = () =>
+        window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      const apply = (theme) => {
+        root.setAttribute("data-theme", theme);
+        root.style.colorScheme = theme === "dark" ? "dark" : "light";
+        if (toggle) toggle.checked = (theme === "dark");
+      };
+
+      const saved = localStorage.getItem(key);
+      const initial = saved || (systemPrefersDark() ? "dark" : "light");
+      apply(initial);
+
+      if (toggle) {
+        toggle.addEventListener("change", () => {
+          const t = toggle.checked ? "dark" : "light";
+          localStorage.setItem(key, t);
+          apply(t);
+        });
+      }
+
+      if (!saved && window.matchMedia) {
+        const mq = window.matchMedia("(prefers-color-scheme: dark)");
+        mq.addEventListener?.("change", () => apply(systemPrefersDark() ? "dark" : "light"));
+      }
+    })();
+
+    // ---------- Converter logic ----------
     function reverseString(str) {
-      // מפצל לפי נקודות קוד כדי להתמודד טוב יותר עם אימוג'ים/תווים מורכבים
       return Array.from(str).reverse().join("");
     }
 
-    // הפיכה "חכמה": הופכת את העברית, אבל משאירה רצפים לטיניים/מספריים כמו שהם
-    // לדוגמה: "123 ABC" יישאר "ABC 123" ביחד בתוך השורה (לא יתהפך לאחור)
     function smartReverseLine(line) {
-      // רצפים לטיניים/מספריים/סימנים נפוצים במחרוזות (.,:/- וכו')
       const re = /[A-Za-z0-9@#%&*()_\-+=\[\]{}<>.,:;\/\\|!?'"`~]+/g;
-
-      // מחליפים כל רצף כזה בסימן placeholder, שומרים אותם במערך
       const tokens = [];
-      const placeholder = (i) => `\u0000${i}\u0000`; // תו NUL כסימון נדיר
+      const placeholder = (i) => `\u0000${i}\u0000`;
 
       const masked = line.replace(re, (m) => {
         tokens.push(m);
         return placeholder(tokens.length - 1);
       });
 
-      // הופכים את כל השורה
       let reversed = reverseString(masked);
-
-      // מחזירים את הטוקנים במקומם
       reversed = reversed.replace(/\u0000(\d+)\u0000/g, (_, n) => tokens[Number(n)]);
-
       return reversed;
     }
 
     function convert(text, mode, keepLatinNums) {
       if (!text) return "";
-
       if (mode === "all") {
-        // היפוך כל הטקסט
-        return keepLatinNums
-          ? smartReverseLine(text) // “חכם” על כל המחרוזת
-          : reverseString(text);
+        return keepLatinNums ? smartReverseLine(text) : reverseString(text);
       }
-
-      // ברירת מחדל: היפוך לכל שורה בנפרד (מומלץ לכתב מראה)
       const lines = text.split(/\r?\n/);
-      const fixed = lines.map(line => keepLatinNums ? smartReverseLine(line) : reverseString(line));
-      return fixed.join("\n");
+      return lines.map(line => keepLatinNums ? smartReverseLine(line) : reverseString(line)).join("\n");
     }
 
     function getMode() {
@@ -200,7 +186,6 @@
       setStatus("נוקה ✅");
     });
 
-    // נוחות: המרה עם Ctrl+Enter
     $("input").addEventListener("keydown", (e) => {
       if (e.ctrlKey && e.key === "Enter") $("btnConvert").click();
     });
