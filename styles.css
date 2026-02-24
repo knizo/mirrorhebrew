@@ -189,3 +189,19 @@ textarea:focus{
 /* dark scrollbar */
 [data-theme="dark"] textarea::-webkit-scrollbar{ width: 10px; }
 [data-theme="dark"] textarea::-webkit-scrollbar-thumb{ background: #2a3a55; border-radius: 10px; }
+
+@media (max-width: 520px){
+  /* overall typography */
+  body{ font-size: 18px; }
+
+  /* labels / helper text */
+  p{ font-size: 16px; }
+  .muted{ font-size: 14px; }
+
+  /* buttons + toggles */
+  .btn{ font-size: 17px; }
+  .opt{ font-size: 16px; }
+
+  /* textareas */
+  textarea{ font-size: 18px; line-height: 1.6; }
+}
