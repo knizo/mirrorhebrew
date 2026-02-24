@@ -180,3 +180,40 @@ textarea:focus{
 /* Optional: nicer scrollbar in dark mode (webkit) */
 [data-theme="dark"] textarea::-webkit-scrollbar{ width: 10px; }
 [data-theme="dark"] textarea::-webkit-scrollbar-thumb{ background: #2a3a55; border-radius: 10px; }
+
+/* ---- Layout restore (keep old look) ---- */
+* { box-sizing: border-box; }
+
+html, body { width: 100%; }
+body { overflow-x: hidden; }
+
+/* Force centered container with padding from both sides */
+.wrap{
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 18px;
+}
+
+/* Keep the card centered and roomy */
+.card{
+  border-radius: 14px;
+  padding: 16px;
+}
+
+/* Make textareas as big as before */
+textarea{
+  min-height: 260px; /* baseline */
+}
+
+/* Desktop: bigger boxes (like your original feel) */
+@media (min-width: 900px){
+  textarea{ min-height: 320px; }
+}
+
+/* Small phones: keep it comfortable */
+@media (max-width: 520px){
+  .wrap{ padding: 12px; }
+  .card{ padding: 12px; }
+  textarea{ min-height: 36vh; }
+}
